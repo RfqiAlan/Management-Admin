@@ -13,7 +13,7 @@ Route::get('/test-wa', function (WhatsAppService $wa) {
     return 'WA sent (cek HP kamu)';
 });
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // auth routes dari Breeze
@@ -67,7 +67,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('categories', CategoryController::class)->except(['show']);
-        Route::resource('users', UserController::class)->only(['index', 'edit', 'update']);
+        Route::resource('users', UserController::class)->only(['index', 'edit', 'update', 'destroy']);
 
         // keluhan
         Route::get('complaints', [AdminComplaintController::class, 'index'])->name('complaints.index');
