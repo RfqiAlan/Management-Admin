@@ -1,60 +1,70 @@
-<x-app-layout :title="'Edit Mahasiswa - '.$user->name">
-    <div class="container py-4">
-        <div class="mb-3">
-            <a href="{{ route('admin.users.index') }}" class="btn btn-link btn-sm p-0">
-                &laquo; Kembali
-            </a>
-        </div>
+<x-app-layout title="Edit Pengguna">
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Edit Data Pengguna') }}
+        </h2>
+    </x-slot>
 
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body">
-                <h1 class="h5 mb-3">Edit Data Mahasiswa</h1>
+    <div class="py-12">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            
+            <div class="mb-4" data-aos="fade-right">
+                <a href="{{ route('admin.users.index') }}" class="text-sm text-gray-500 hover:text-gray-800 flex items-center">
+                    &larr; Kembali ke Daftar
+                </a>
+            </div>
 
-                @if(session('success'))
-                    <div class="alert alert-success small">{{ session('success') }}</div>
-                @endif
-
-                <form action="{{ route('admin.users.update', $user) }}" method="POST" class="small">
+            <div class="bg-white shadow-sm sm:rounded-xl p-6" data-aos="fade-up">
+                <form action="{{ route('admin.users.update', $user) }}" method="POST" class="space-y-6">
                     @csrf
                     @method('PUT')
 
-                    <div class="mb-3">
-                        <label class="form-label small">Nama</label>
-                        <input type="text" name="name"
-                               value="{{ old('name', $user->name) }}"
-                               class="form-control form-control-sm @error('name') is-invalid @enderror" required>
-                        @error('name')
-                        <div class="invalid-feedback small">{{ $message }}</div>
-                        @enderror
+                    <div>
+                        <x-input-label for="name" :value="__('Nama Lengkap')" />
+                        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name', $user->name)" required autofocus />
+                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small">Email</label>
-                        <input type="email" name="email"
-                               value="{{ old('email', $user->email) }}"
-                               class="form-control form-control-sm @error('email') is-invalid @enderror" required>
-                        @error('email')
-                        <div class="invalid-feedback small">{{ $message }}</div>
-                        @enderror
+                    <div>
+                        <x-input-label for="email" :value="__('Email')" />
+                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $user->email)" required />
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small">No. WA</label>
-                        <input type="text" name="phone"
-                               value="{{ old('phone', $user->phone) }}"
-                               class="form-control form-control-sm @error('phone') is-invalid @enderror">
-                        @error('phone')
-                        <div class="invalid-feedback small">{{ $message }}</div>
-                        @enderror
-                        <div class="form-text small">
-                            Gunakan format Indonesia, misal: 08xxxx (akan otomatis diubah ke 628xxx).
+                    <div>
+                        <x-input-label for="phone" :value="__('Nomor WhatsApp')" />
+                        <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone', $user->phone)" placeholder="0812..." />
+                        <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <x-input-label for="role" :value="__('Role / Peran')" />
+                        <select name="role" id="role" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                            <option value="student" {{ old('role', $user->role) === 'student' ? 'selected' : '' }}>Mahasiswa</option>
+                            <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Administrator</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('role')" class="mt-2" />
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-100">
+                        <h3 class="text-sm font-medium text-gray-900 mb-3">Ubah Password (Opsional)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <x-input-label for="password" :value="__('Password Baru')" />
+                                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" autocomplete="new-password" placeholder="Kosongkan jika tidak ubah" />
+                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="password_confirmation" :value="__('Konfirmasi Password')" />
+                                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" />
+                            </div>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-primary btn-sm" type="submit">
-                            Simpan Perubahan
-                        </button>
+                    <div class="flex items-center justify-end pt-4">
+                        <x-primary-button>
+                            {{ __('Simpan Perubahan') }}
+                        </x-primary-button>
                     </div>
                 </form>
             </div>
