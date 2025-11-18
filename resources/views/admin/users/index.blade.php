@@ -7,7 +7,6 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
             <div class="bg-white shadow-sm sm:rounded-xl overflow-hidden" data-aos="fade-up">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-lg font-medium text-gray-900">Daftar Akun</h3>
@@ -26,14 +25,25 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            {{-- Pastikan menggunakan $users disini --}}
                             @forelse($users as $user)
                                 <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-gray-500">{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
-                                    <td class="px-6 py-4">
-                                        <div class="font-medium text-gray-900">{{ $user->name }}</div>
-                                        <div class="text-xs text-gray-500">{{ $user->email }}</div>
+                                    <td class="px-6 py-4 text-gray-500">
+                                        {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
                                     </td>
+
+                                    <td class="px-6 py-4 flex items-center gap-3">
+                                        <!-- Static SVG Avatar -->
+                                        <svg class="w-10 h-10 rounded-full bg-gray-200 text-gray-500 p-2" 
+                                             fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2s2.1 4.8 4.8 4.8zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                                        </svg>
+
+                                        <div>
+                                            <div class="font-medium text-gray-900">{{ $user->name }}</div>
+                                            <div class="text-xs text-gray-500">{{ $user->email }}</div>
+                                        </div>
+                                    </td>
+
                                     <td class="px-6 py-4">
                                         @if($user->role === 'admin')
                                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
@@ -45,17 +55,15 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 text-gray-500">
-                                        {{ $user->phone ?? '-' }}
-                                    </td>
-                                    <td class="px-6 py-4 text-gray-500">
-                                        {{ $user->created_at->format('d M Y') }}
-                                    </td>
+
+                                    <td class="px-6 py-4 text-gray-500">{{ $user->phone ?? '-' }}</td>
+                                    <td class="px-6 py-4 text-gray-500">{{ $user->created_at->format('d M Y') }}</td>
+
                                     <td class="px-6 py-4 text-right font-medium">
                                         <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
-                                        
+
                                         @if(auth()->id() !== $user->id)
-                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus user ini? Data keluhan terkait mungkin akan hilang.')">
+                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus user ini?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-rose-600 hover:text-rose-900 bg-transparent border-0 p-0 cursor-pointer">
@@ -73,8 +81,7 @@
                         </tbody>
                     </table>
                 </div>
-                
-                {{-- Pagination menggunakan $users --}}
+
                 <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
                     {{ $users->links() }}
                 </div>
