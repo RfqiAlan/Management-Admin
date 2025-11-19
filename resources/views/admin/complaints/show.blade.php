@@ -20,8 +20,11 @@
                         <div>
                             <h3 class="text-lg font-bold text-gray-900">{{ $complaint->title }}</h3>
                             <div class="text-sm text-gray-500 mt-1">
-                                Oleh: <span class="font-medium text-gray-800">{{ $complaint->user->name }}</span> 
-                                ({{ $complaint->user->email }})
+                                <div class="flex items-center gap-2">
+                                    <img src="{{ $complaint->user->profile_photo_url }}" alt="Profile Photo" class="w-6 h-6 rounded-full object-cover">
+                                    <span class="font-medium text-gray-800">{{ $complaint->user->name }}</span>
+                                    <span class="text-sm text-gray-500">({{ $complaint->user->email }})</span>
+                                </div>
                             </div>
                             <div class="text-sm text-gray-500">
                                 Telp: {{ $complaint->user->phone ?? '-' }}
@@ -77,9 +80,7 @@
                         @forelse($complaint->responses as $resp)
                             <div class="flex gap-4">
                                 <div class="flex-shrink-0 mt-1">
-                                    <div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
-                                        ADM
-                                    </div>
+                                    <img src="{{ $resp->admin->profile_photo_url ?? asset('images/default_profile.jpg') }}" alt="Admin Photo" class="w-8 h-8 rounded-full object-cover">
                                 </div>
                                 <div class="flex-grow bg-gray-50 rounded-lg p-4 border">
                                     <div class="flex justify-between items-center mb-2">
