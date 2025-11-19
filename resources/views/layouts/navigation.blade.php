@@ -47,17 +47,22 @@
 
             {{-- USER + LOGOUT (desktop) --}}
             <div class="hidden sm:flex sm:items-center sm:space-x-4">
-            @auth
-                <!-- Avatar -->
-                <svg class="w-9 h-9 rounded-full bg-gray-200 text-gray-500 p-1.5"
-                    fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2s2.1 4.8 4.8 4.8zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                </svg>
+                @auth
+                    <!-- Avatar -->
+                    <svg class="w-9 h-9 rounded-full bg-gray-200 text-gray-500 p-1.5"
+                         fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2s2.1 4.8 4.8 4.8zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                    </svg>
 
-                <span class="text-sm text-gray-700">
-                    {{ auth()->user()->name }}
-                </span>
+                    <span class="text-sm text-gray-700">
+                        {{ auth()->user()->name }}
+                    </span>
 
+                    {{-- Tombol Profil --}}
+                    <a href="{{ route('profile.edit') }}"
+                       class="text-sm text-gray-700 hover:text-indigo-600">
+                        Profil
+                    </a>
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -136,15 +141,20 @@
         {{-- user + logout mobile --}}
         <div class="border-t border-gray-100 px-4 py-3">
             @auth
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-800">
-                            {{ auth()->user()->name }}
-                        </p>
-                        <p class="text-xs text-gray-500">
-                            {{ auth()->user()->email }}
-                        </p>
-                    </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-800">
+                        {{ auth()->user()->name }}
+                    </p>
+                    <p class="text-xs text-gray-500 mb-2">
+                        {{ auth()->user()->email }}
+                    </p>
+
+                    {{-- Tombol Profil --}}
+                    <a href="{{ route('profile.edit') }}"
+                       class="block text-sm text-gray-700 hover:text-indigo-600 mb-2">
+                        Profil
+                    </a>
+
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"

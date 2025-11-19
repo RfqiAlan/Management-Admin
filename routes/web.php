@@ -2,6 +2,7 @@
 use App\Http\Controllers\Student\ComplaintController as StudentComplaintController;
 use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -43,6 +44,10 @@ Route::get('/dashboard', function () {
     // fallback kalau ada role lain
     return redirect('/');
 })->middleware(['auth'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
 
 // ========== STUDENT ==========
 Route::middleware(['auth', 'role:student'])
