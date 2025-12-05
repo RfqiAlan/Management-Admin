@@ -72,28 +72,6 @@ class ComplaintController extends Controller
 
         $whatsApp->send($user->phone, $messageToStudent);
 
-        // ====== KIRIM WA KE ADMIN (Notifikasi Ada Laporan Baru) ======
-        $adminPhone = Setting::getValue('admin_phone');
-        
-        if ($adminPhone) {
-            $templateAdmin = Setting::getValue('wa_template_admin_notif',
-                "📢 *LAPORAN BARU*\n\nID: #{id}\nDari: {nama}\nKategori: {kategori}\nJudul: {judul}\n\nSegera cek dan tindak lanjuti di panel admin."
-            );
-
-            $messageToAdmin = strtr($templateAdmin, [
-                '{nama}'     => $user->name,
-                '{email}'    => $user->email,
-                '{phone}'    => $user->phone ?? '-',
-                '{id}'       => $complaint->id,
-                '{judul}'    => $complaint->title,
-                '{kategori}' => $complaint->category->name ?? 'Umum',
-                '{deskripsi}'=> \Str::limit($complaint->description, 100),
-            ]);
-
-            $whatsApp->send($adminPhone, $messageToAdmin);
-        }
-        // ===================================
-
         return redirect()
             ->route('student.complaints.index')
             ->with('success', 'Keluhan berhasil dikirim.');

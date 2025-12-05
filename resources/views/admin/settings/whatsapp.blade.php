@@ -2,7 +2,7 @@
     <!-- Page Header -->
     <div class="mb-6" data-aos="fade-down">
         <h1 class="text-2xl font-bold text-gray-800">Notifikasi WhatsApp</h1>
-        <p class="text-gray-500">Konfigurasi integrasi WhatsApp untuk notifikasi otomatis</p>
+        <p class="text-gray-500">Konfigurasi integrasi WhatsApp untuk notifikasi otomatis ke mahasiswa</p>
     </div>
 
     <div class="max-w-4xl">
@@ -21,73 +21,30 @@
             <form action="{{ route('admin.settings.whatsapp.update') }}" method="POST" class="space-y-8">
                 @csrf
 
-                <!-- API Configuration Section -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- API Token -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            <i class="fas fa-key mr-1 text-green-500"></i>
-                            Fonnte API Token
-                        </label>
-                        <input type="text" name="wa_token" value="{{ old('wa_token', $wa_token) }}"
-                               placeholder="Masukkan API Token dari Fonnte"
-                               class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 transition-all @error('wa_token') border-red-400 @enderror"
-                               required>
-                        @error('wa_token')
-                            <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
-                        @enderror
-                        <p class="mt-2 text-sm text-gray-500">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Dapatkan token dari <a href="https://fonnte.com" target="_blank" class="text-green-600 hover:underline">Fonnte.com</a>
-                        </p>
-                    </div>
-
-                    <!-- Admin Phone -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">
-                            <i class="fas fa-phone mr-1 text-indigo-500"></i>
-                            Nomor WhatsApp Admin
-                        </label>
-                        <input type="text" name="admin_phone" value="{{ old('admin_phone', $admin_phone) }}"
-                               placeholder="08xxxxxxxxxx"
-                               class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all">
-                        <p class="mt-2 text-sm text-gray-500">
-                            <i class="fas fa-bell mr-1"></i>
-                            Akan menerima notifikasi saat ada laporan baru
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Admin Notification Template -->
-                <div class="pt-6 border-t border-gray-100">
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">
-                        <i class="fas fa-bell text-indigo-500 mr-2"></i>
-                        Notifikasi ke Admin
-                    </h3>
-                    <p class="text-sm text-gray-500 mb-4">
-                        Pesan yang dikirim ke admin ketika ada keluhan baru. Placeholder tambahan: 
-                        <code class="px-2 py-0.5 bg-gray-100 rounded text-xs">{email}</code>
-                        <code class="px-2 py-0.5 bg-gray-100 rounded text-xs">{phone}</code>
-                        <code class="px-2 py-0.5 bg-gray-100 rounded text-xs">{kategori}</code>
-                        <code class="px-2 py-0.5 bg-gray-100 rounded text-xs">{deskripsi}</code>
+                <!-- API Token -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-key mr-1 text-green-500"></i>
+                        Fonnte API Token
+                    </label>
+                    <input type="text" name="wa_token" value="{{ old('wa_token', $wa_token) }}"
+                           placeholder="Masukkan API Token dari Fonnte"
+                           class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring focus:ring-green-200 focus:ring-opacity-50 transition-all @error('wa_token') border-red-400 @enderror"
+                           required>
+                    @error('wa_token')
+                        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
+                    <p class="mt-2 text-sm text-gray-500">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Dapatkan token dari <a href="https://fonnte.com" target="_blank" class="text-green-600 hover:underline">Fonnte.com</a>
                     </p>
-
-                    <div class="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
-                        <label class="block text-sm font-semibold text-indigo-800 mb-2">
-                            <i class="fas fa-bell mr-1"></i>
-                            Template Notifikasi Admin (Laporan Baru)
-                        </label>
-                        <textarea name="tmpl_admin_notif" rows="4"
-                                  placeholder="📢 *LAPORAN BARU*&#10;&#10;ID: #{id}&#10;Dari: {nama}&#10;Kategori: {kategori}&#10;Judul: {judul}&#10;&#10;Segera cek dan tindak lanjuti."
-                                  class="block w-full px-4 py-3 rounded-xl border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all resize-none text-sm">{{ old('tmpl_admin_notif', $tmpl_admin_notif) }}</textarea>
-                    </div>
                 </div>
 
                 <!-- Student Templates Section -->
                 <div class="pt-6 border-t border-gray-100">
                     <h3 class="text-lg font-bold text-gray-800 mb-2">
                         <i class="fas fa-user-graduate text-green-500 mr-2"></i>
-                        Notifikasi ke Mahasiswa
+                        Template Notifikasi ke Mahasiswa
                     </h3>
                     <p class="text-sm text-gray-500 mb-4">
                         Pesan yang dikirim ke mahasiswa. Placeholder: 

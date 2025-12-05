@@ -24,16 +24,22 @@ class WhatsAppService
         }
 
         try {
-            Http::withHeaders([
+            $response = Http::withHeaders([
                 'Authorization' => $token,
             ])->asForm()->post('https://api.fonnte.com/send', [
                 'target'      => $phone,
                 'message'     => $message,
-                'countryCode' => '62', // biar ga usah pakai +62 di nomor
+                'countryCode' => '62',
+            ]);
+            
+            // Log response untuk debugging
+            logger()->info('WhatsApp sent', [
+                'phone' => $phone,
+                'status' => $response->status(),
+                'response' => $response->json(),
             ]);
         } catch (\Throwable $e) {
-            // untuk sekarang cukup di-silent, atau bisa kamu log
-            // logger()->error('WA error: '.$e->getMessage());
+            logger()->error('WA error: '.$e->getMessage());
         }
     }
 }
