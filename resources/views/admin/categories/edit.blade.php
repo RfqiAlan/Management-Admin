@@ -1,38 +1,67 @@
-<x-app-layout title="Edit Kategori">
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Kategori') }}
-        </h2>
-    </x-slot>
+<x-admin-layout title="Edit Kategori" header="Edit Kategori">
+    <!-- Back Button -->
+    <div class="mb-6" data-aos="fade-right">
+        <a href="{{ route('admin.categories.index') }}" 
+           class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium group">
+            <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+            <span>Kembali ke Daftar Kategori</span>
+        </a>
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <a href="{{ route('admin.categories.index') }}" class="text-sm text-gray-500 hover:text-gray-800 mb-4 inline-block">&larr; Kembali</a>
-
-            <div class="bg-white shadow-sm sm:rounded-xl p-6" data-aos="fade-up">
-                <form action="{{ route('admin.categories.update', $category) }}" method="POST" class="space-y-6">
-                    @csrf
-                    @method('PUT')
-
-                    <div>
-                        <x-input-label for="name" :value="__('Nama Kategori')" />
-                        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name', $category->name)" required />
-                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                    </div>
-
-                    <div>
-                        <x-input-label for="description" :value="__('Deskripsi (Opsional)')" />
-                        <textarea name="description" id="description" rows="3" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('description', $category->description) }}</textarea>
-                        <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                    </div>
-
-                    <div class="flex items-center justify-end">
-                        <x-primary-button>
-                            {{ __('Update Kategori') }}
-                        </x-primary-button>
-                    </div>
-                </form>
+    <!-- Form Card -->
+    <div class="max-w-2xl" data-aos="fade-up">
+        <div class="glass-card rounded-2xl p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg">
+                    <i class="fas fa-edit text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800">Edit Kategori</h2>
+                    <p class="text-sm text-gray-500">Perbarui informasi kategori</p>
+                </div>
             </div>
+
+            <form action="{{ route('admin.categories.update', $category) }}" method="POST" class="space-y-6">
+                @csrf
+                @method('PUT')
+
+                <div>
+                    <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-tag mr-1 text-indigo-500"></i>Nama Kategori
+                    </label>
+                    <input type="text" name="name" id="name" value="{{ old('name', $category->name) }}"
+                           placeholder="Contoh: Fasilitas, Akademik, dll"
+                           class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all"
+                           required>
+                    @error('name')
+                        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-align-left mr-1 text-indigo-500"></i>Deskripsi (Opsional)
+                    </label>
+                    <textarea name="description" id="description" rows="4"
+                              placeholder="Jelaskan tentang kategori ini..."
+                              class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all resize-none">{{ old('description', $category->description) }}</textarea>
+                    @error('description')
+                        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" 
+                            class="flex-1 px-6 py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]">
+                        <i class="fas fa-save mr-2"></i>
+                        Update Kategori
+                    </button>
+                    <a href="{{ route('admin.categories.index') }}" 
+                       class="px-6 py-4 bg-gray-100 text-gray-600 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+                        Batal
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

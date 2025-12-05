@@ -1,89 +1,49 @@
-<x-app-layout title="Profil Saya">
-    <div class="max-w-4xl mx-auto px-4 py-6">
+@php
+    $isAdmin = auth()->user()->isAdmin();
+    $layoutComponent = $isAdmin ? 'admin-layout' : 'student-layout';
+@endphp
 
-        {{-- PAGE HEADER --}}
-        <div class="mb-4 flex items-center justify-between gap-3">
-            <div>
-                <h1 class="text-lg font-semibold text-slate-900">
-                    Profil Saya
-                </h1>
-                <p class="text-sm text-slate-500">
-                    Perbarui informasi akun kamu: nama, email, nomor HP, dan password.
-                </p>
-            </div>
-
-            <span
-                class="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-                <span class="mr-1 h-1.5 w-1.5 rounded-full bg-indigo-500"></span>
-                {{ auth()->user()->isAdmin() ? 'Administrator' : 'Mahasiswa' }}
-            </span>
-        </div>
-
-        {{-- CARD --}}
-        <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
-
-            {{-- CARD HEADER GRADIENT --}}
-            <div class="bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 px-6 py-4">
-                <div class="flex items-center gap-4">
-                    <div
-                        class="flex h-14 w-14 items-center justify-center rounded-full bg-white/15 ring-2 ring-white/30 backdrop-blur-sm">
-                        <span class="text-xl font-semibold text-white">
+<x-dynamic-component :component="$layoutComponent" title="Profil Saya" header="Profil Saya">
+    <div class="max-w-3xl {{ $isAdmin ? '' : 'mx-auto' }}">
+        <!-- Profile Card -->
+        <div class="glass-card rounded-2xl overflow-hidden" data-aos="fade-up">
+            <!-- Header Gradient -->
+            <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 px-8 py-6">
+                <div class="flex items-center gap-5">
+                    <div class="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center ring-4 ring-white/30 shadow-2xl">
+                        <span class="text-3xl font-bold text-white">
                             {{ strtoupper(mb_substr($user->name, 0, 1)) }}
                         </span>
                     </div>
                     <div class="min-w-0">
-                        <p class="truncate text-sm font-medium text-indigo-100">
-                            Akun terhubung sebagai
-                        </p>
-                        <p class="truncate text-base font-semibold text-white">
-                            {{ $user->name }}
-                        </p>
-                        <p class="truncate text-xs text-indigo-100/80">
-                            {{ $user->email }}
-                            @if($user->phone)
-                                • {{ $user->phone }}
-                            @endif
-                        </p>
+                        <p class="text-indigo-100 text-sm mb-1">Akun terhubung sebagai</p>
+                        <h2 class="text-2xl font-bold text-white truncate">{{ $user->name }}</h2>
+                        <div class="flex items-center gap-3 mt-1">
+                            <span class="text-white/80 text-sm">{{ $user->email }}</span>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white">
+                                {{ $isAdmin ? 'Administrator' : 'Mahasiswa' }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {{-- CARD BODY --}}
-            <div class="px-6 py-5 space-y-5">
-
-                {{-- ALERTS --}}
+            <!-- Form Body -->
+            <div class="p-8">
                 @if(session('success'))
-                    <div
-                        class="flex items-start gap-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
-                        <svg class="mt-0.5 h-4 w-4" viewBox="0 0 24 24" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 3L2 21H22L12 3Z" stroke="currentColor" stroke-width="1.5"
-                                  stroke-linejoin="round"/>
-                            <path d="M12 10V14" stroke="currentColor" stroke-width="1.5"
-                                  stroke-linecap="round"/>
-                            <path d="M12 17V17.5" stroke="currentColor" stroke-width="1.5"
-                                  stroke-linecap="round"/>
-                        </svg>
-                        <p>{{ session('success') }}</p>
+                    <div class="mb-6 flex items-center gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700">
+                        <i class="fas fa-check-circle text-lg"></i>
+                        <span>{{ session('success') }}</span>
                     </div>
                 @endif
 
                 @if ($errors->any())
-                    <div
-                        class="space-y-1 rounded-xl border border-rose-100 bg-rose-50 px-3 py-2 text-xs text-rose-700">
-                        <div class="flex items-center gap-1.5 font-medium">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 3L2 21H22L12 3Z" stroke="currentColor" stroke-width="1.5"
-                                      stroke-linejoin="round"/>
-                                <path d="M12 9V13" stroke="currentColor" stroke-width="1.5"
-                                      stroke-linecap="round"/>
-                                <path d="M12 16V16.5" stroke="currentColor" stroke-width="1.5"
-                                      stroke-linecap="round"/>
-                            </svg>
+                    <div class="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700">
+                        <div class="flex items-center gap-2 font-semibold mb-2">
+                            <i class="fas fa-exclamation-triangle"></i>
                             <span>Periksa kembali isian kamu:</span>
                         </div>
-                        <ul class="list-disc pl-4">
+                        <ul class="list-disc pl-6 text-sm space-y-1">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -91,155 +51,110 @@
                     </div>
                 @endif
 
-                <form action="{{ route('profile.update') }}" method="POST" class="space-y-6">
+                <form action="{{ route('profile.update') }}" method="POST" class="space-y-8">
                     @csrf
                     @method('PUT')
 
-                    {{-- SECTION: INFO PRIBADI --}}
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                Informasi pribadi
-                            </h2>
-                            <span class="text-[11px] text-slate-400">
-                                Digunakan untuk identitas dalam sistem keluhan.
-                            </span>
+                    <!-- Personal Info Section -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
+                                <i class="fas fa-user text-indigo-600"></i>
+                            </div>
+                            <h3 class="font-semibold text-gray-800">Informasi Pribadi</h3>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {{-- Nama --}}
-                            <div class="space-y-1.5">
-                                <label class="flex items-center gap-1 text-xs font-medium text-slate-700">
-                                    <span>Nama Lengkap</span>
-                                    <span class="text-rose-500">*</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- Name -->
+                            <div>
+                                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Nama Lengkap <span class="text-rose-500">*</span>
                                 </label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    required
-                                    value="{{ old('name', $user->name) }}"
-                                    class="block w-full rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition
-                                           focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40
-                                           @error('name') border-rose-400 focus:ring-rose-400/40 @enderror"
-                                    placeholder="Masukkan nama lengkap kamu"
-                                >
-                                <p class="text-[11px] text-slate-400">
-                                    Nama ini akan tampil di daftar keluhan dan riwayat.
-                                </p>
+                                <input type="text" name="name" id="name" required
+                                       value="{{ old('name', $user->name) }}"
+                                       placeholder="Masukkan nama lengkap"
+                                       class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all @error('name') border-rose-400 @enderror">
                             </div>
 
-                            {{-- Email --}}
-                            <div class="space-y-1.5">
-                                <label class="flex items-center gap-1 text-xs font-medium text-slate-700">
-                                    <span>Alamat Email</span>
-                                    <span class="text-rose-500">*</span>
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Email <span class="text-rose-500">*</span>
                                 </label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    required
-                                    value="{{ old('email', $user->email) }}"
-                                    class="block w-full rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition
-                                           focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40
-                                           @error('email') border-rose-400 focus:ring-rose-400/40 @enderror"
-                                    placeholder="contoh@universitas.ac.id"
-                                >
-                                <p class="text-[11px] text-slate-400">
-                                    Pastikan email aktif, notifikasi bisa dikirim ke sini.
-                                </p>
+                                <input type="email" name="email" id="email" required
+                                       value="{{ old('email', $user->email) }}"
+                                       placeholder="nama@kampus.ac.id"
+                                       class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all @error('email') border-rose-400 @enderror">
                             </div>
 
-                            {{-- No HP --}}
-                            <div class="space-y-1.5">
-                                <label class="flex items-center gap-1 text-xs font-medium text-slate-700">
-                                    <span>No. HP</span>
+                            <!-- Phone -->
+                            <div class="md:col-span-2">
+                                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fab fa-whatsapp mr-1 text-green-500"></i>
+                                    Nomor WhatsApp
                                 </label>
-                                <input
-                                    type="text"
-                                    name="phone"
-                                    value="{{ old('phone', $user->phone) }}"
-                                    class="block w-full rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition
-                                           focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40
-                                           @error('phone') border-rose-400 focus:ring-rose-400/40 @enderror"
-                                    placeholder="Contoh: 08xxxxxxxxxx"
-                                >
-                                <p class="text-[11px] text-slate-400">
-                                    Opsional, tapi membantu jika admin perlu menghubungi kamu.
+                                <input type="text" name="phone" id="phone"
+                                       value="{{ old('phone', $user->phone) }}"
+                                       placeholder="08xxxxxxxxxx"
+                                       class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all @error('phone') border-rose-400 @enderror">
+                                <p class="text-xs text-gray-500 mt-1">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Untuk menerima notifikasi status keluhan
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    {{-- SECTION: PASSWORD --}}
-                    <div class="space-y-3 border-t border-slate-100 pt-4">
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                Keamanan akun
-                            </h2>
-                            <span class="text-[11px] text-slate-400">
-                                Kosongkan jika tidak ingin mengganti password.
-                            </span>
+                    <!-- Security Section -->
+                    <div class="pt-6 border-t border-gray-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                                <i class="fas fa-lock text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Keamanan Akun</h3>
+                                <p class="text-xs text-gray-500">Kosongkan jika tidak ingin mengganti password</p>
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {{-- Password Baru --}}
-                            <div class="space-y-1.5">
-                                <label class="flex items-center gap-1 text-xs font-medium text-slate-700">
-                                    <span>Password Baru</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- New Password -->
+                            <div>
+                                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Password Baru
                                 </label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    class="block w-full rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition
-                                           focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40
-                                           @error('password') border-rose-400 focus:ring-rose-400/40 @enderror"
-                                    placeholder="Minimal 8 karakter"
-                                >
-                                <p class="text-[11px] text-slate-400">
-                                    Isi hanya jika kamu ingin mengganti password.
-                                </p>
+                                <input type="password" name="password" id="password"
+                                       placeholder="Minimal 8 karakter"
+                                       class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all @error('password') border-rose-400 @enderror">
                             </div>
 
-                            {{-- Konfirmasi Password --}}
-                            <div class="space-y-1.5">
-                                <label class="flex items-center gap-1 text-xs font-medium text-slate-700">
-                                    <span>Konfirmasi Password Baru</span>
+                            <!-- Confirm Password -->
+                            <div>
+                                <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Konfirmasi Password
                                 </label>
-                                <input
-                                    type="password"
-                                    name="password_confirmation"
-                                    class="block w-full rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition
-                                           focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40"
-                                    placeholder="Ulangi password baru"
-                                >
+                                <input type="password" name="password_confirmation" id="password_confirmation"
+                                       placeholder="Ulangi password baru"
+                                       class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all">
                             </div>
                         </div>
                     </div>
 
-                    {{-- ACTIONS --}}
-                    <div class="flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
-                        <button
-                            type="button"
-                            onclick="window.history.back()"
-                            class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition
-                                   hover:bg-slate-50 hover:border-slate-300">
-                            ← Kembali
-                        </button>
-
-                        <button
-                            type="submit"
-                            class="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition
-                                   hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 12.75L10.5 17.25L18 6.75" stroke="currentColor" stroke-width="1.6"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+                    <!-- Actions -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-100">
+                        <button type="submit" 
+                                class="flex-1 px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
+                            <i class="fas fa-save"></i>
                             <span>Simpan Perubahan</span>
+                        </button>
+                        <button type="button" onclick="window.history.back()"
+                                class="px-6 py-4 bg-gray-100 text-gray-600 rounded-xl font-semibold hover:bg-gray-200 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Kembali</span>
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-dynamic-component>

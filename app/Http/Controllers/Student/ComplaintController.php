@@ -37,45 +37,67 @@ class ComplaintController extends Controller
     }
 
     public function store(Request $request, WhatsAppService $whatsApp)
-{
-    $data = $request->validate([
-        'category_id'   => 'required|exists:categories,id',
-        'title'         => 'required|string|max:255',
-        'description'   => 'required|string',
-        'evidence_file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
-    ]);
+    {
+        $data = $request->validate([
+            'category_id'   => 'required|exists:categories,id',
+            'title'         => 'required|string|max:255',
+            'description'   => 'required|string',
+            'evidence_file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
+        ]);
 
-    $data['user_id'] = auth()->id();
-    $data['status']  = 'pending';
+        $data['user_id'] = auth()->id();
+        $data['status']  = 'pending';
 
-    if ($request->hasFile('evidence_file')) {
-        $data['evidence_file'] = $request->file('evidence_file')->store('complaints', 'public');
+        if ($request->hasFile('evidence_file')) {
+            $data['evidence_file'] = $request->file('evidence_file')->store('complaints', 'public');
+        }
+
+        $complaint = Complaint::create($data);
+        $complaint->load('category');
+
+        $user = auth()->user();
+
+        // ====== KIRIM WA KE MAHASISWA (Konfirmasi Keluhan Diterima) ======
+        $templateNew = Setting::getValue('wa_template_new',
+            "Halo {nama}, keluhan Anda telah kami terima dengan ID #{id}.\n\nJudul: {judul}\nStatus: {status}\n\nTerima kasih telah melapor."
+        );
+
+        $messageToStudent = strtr($templateNew, [
+            '{nama}'     => $user->name,
+            '{id}'       => $complaint->id,
+            '{judul}'    => $complaint->title,
+            '{status}'   => ucfirst($complaint->status),
+            '{kategori}' => $complaint->category->name ?? 'Umum',
+        ]);
+
+        $whatsApp->send($user->phone, $messageToStudent);
+
+        // ====== KIRIM WA KE ADMIN (Notifikasi Ada Laporan Baru) ======
+        $adminPhone = Setting::getValue('admin_phone');
+        
+        if ($adminPhone) {
+            $templateAdmin = Setting::getValue('wa_template_admin_notif',
+                "📢 *LAPORAN BARU*\n\nID: #{id}\nDari: {nama}\nKategori: {kategori}\nJudul: {judul}\n\nSegera cek dan tindak lanjuti di panel admin."
+            );
+
+            $messageToAdmin = strtr($templateAdmin, [
+                '{nama}'     => $user->name,
+                '{email}'    => $user->email,
+                '{phone}'    => $user->phone ?? '-',
+                '{id}'       => $complaint->id,
+                '{judul}'    => $complaint->title,
+                '{kategori}' => $complaint->category->name ?? 'Umum',
+                '{deskripsi}'=> \Str::limit($complaint->description, 100),
+            ]);
+
+            $whatsApp->send($adminPhone, $messageToAdmin);
+        }
+        // ===================================
+
+        return redirect()
+            ->route('student.complaints.index')
+            ->with('success', 'Keluhan berhasil dikirim.');
     }
-
-    $complaint = Complaint::create($data);
-
-    // ====== KIRIM WA KE MAHASISWA ======
-    $user  = auth()->user();
-    $phone = $user->phone;
-
-    $template = Setting::getValue('wa_template_new',
-        "Halo {nama}, keluhan Anda telah kami terima dengan ID #{id}."
-    );
-
-    $message = strtr($template, [
-        '{nama}'   => $user->name,
-        '{id}'     => $complaint->id,
-        '{judul}'  => $complaint->title,
-        '{status}' => $complaint->status,
-    ]);
-
-    $whatsApp->send($phone, $message);
-    // ===================================
-
-    return redirect()
-        ->route('student.complaints.index')
-        ->with('success', 'Keluhan berhasil dikirim.');
-}
     public function show(Complaint $complaint)
     {
         abort_unless($complaint->user_id === auth()->id(), 403);

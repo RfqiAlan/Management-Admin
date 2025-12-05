@@ -1,47 +1,103 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Sistem Keluhan') }}</title>
+    <title>{{ config('app.name', 'Sistem Keluhan') }}</title>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased bg-gray-50">
-        
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gradient-to-br from-indigo-50 to-white">
-            
-            <div class="text-center mb-6" data-aos="fade-down">
-                <a href="/" class="flex flex-col items-center">
-                    <div class="w-16 h-16 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg mb-3 transform rotate-3 hover:rotate-0 transition duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="font-sans text-gray-900 antialiased">
+    <div class="min-h-screen flex">
+        <!-- Left Side - Branding -->
+        <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 relative overflow-hidden">
+            <!-- Animated Background Elements -->
+            <div class="absolute inset-0">
+                <div class="absolute top-20 left-20 w-64 h-64 bg-white/10 rounded-full mix-blend-overlay filter blur-xl animate-pulse"></div>
+                <div class="absolute bottom-20 right-20 w-80 h-80 bg-white/10 rounded-full mix-blend-overlay filter blur-xl animate-pulse" style="animation-delay: 1s;"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full"></div>
+            </div>
+
+            <!-- Content -->
+            <div class="relative z-10 flex flex-col justify-center px-12 xl:px-20">
+                <div class="mb-8" data-aos="fade-right">
+                    <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 shadow-2xl">
+                        <i class="fas fa-graduation-cap text-white text-3xl"></i>
                     </div>
-                    <h1 class="text-2xl font-bold text-gray-800">Sistem Keluhan Kampus</h1>
-                    <p class="text-sm text-gray-500">Silakan login untuk melanjutkan</p>
-                </a>
+                    <h1 class="text-4xl xl:text-5xl font-bold text-white mb-4 leading-tight">
+                        Sistem Keluhan<br>Mahasiswa
+                    </h1>
+                    <p class="text-white/80 text-lg xl:text-xl max-w-md">
+                        Platform digital untuk menyampaikan aspirasi dan keluhan secara mudah dan transparan.
+                    </p>
+                </div>
+
+                <!-- Features -->
+                <div class="space-y-4" data-aos="fade-right" data-aos-delay="200">
+                    <div class="flex items-center gap-4 text-white/90">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <span>Proses cepat dan efisien</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-white/90">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <span>Notifikasi WhatsApp otomatis</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-white/90">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <span>Pantau progress secara real-time</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="w-full sm:max-w-md px-6 py-8 bg-white shadow-xl shadow-gray-200/50 overflow-hidden sm:rounded-2xl border border-gray-100" data-aos="fade-up" data-aos-delay="100">
-                {{ $slot }}
-            </div>
-
-            <div class="mt-6 text-center text-xs text-gray-400" data-aos="fade-in" data-aos-delay="200">
-                &copy; {{ date('Y') }} Universitas Teknologi. All rights reserved.
-            </div>
+            <!-- Bottom Decoration -->
+            <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent"></div>
         </div>
 
-        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-        <script>
-            AOS.init({ duration: 800, once: true });
-        </script>
-    </body>
+        <!-- Right Side - Form -->
+        <div class="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+            <!-- Mobile Logo (shown only on mobile) -->
+            <div class="lg:hidden text-center mb-8" data-aos="fade-down">
+                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">Sistem Keluhan</h1>
+                <p class="text-gray-500">Silakan masuk untuk melanjutkan</p>
+            </div>
+
+            <!-- Form Container -->
+            <div class="w-full max-w-md" data-aos="fade-up">
+                <div class="bg-white rounded-3xl shadow-xl shadow-indigo-100/50 p-8 border border-gray-100">
+                    {{ $slot }}
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-8 text-center text-sm text-gray-400">
+                    &copy; {{ date('Y') }} Sistem Keluhan Mahasiswa. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true, easing: 'ease-out-cubic' });
+    </script>
+</body>
 </html>

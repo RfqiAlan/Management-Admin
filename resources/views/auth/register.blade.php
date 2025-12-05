@@ -1,55 +1,90 @@
 <x-guest-layout>
-    <div class="text-center mb-6" data-aos="fade-down">
-        <h2 class="text-2xl font-bold text-gray-800">Daftar Akun Mahasiswa</h2>
-        <p class="text-sm text-gray-500">Buat akun untuk melaporkan keluhan</p>
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Buat Akun Baru 🎓</h2>
+        <p class="text-gray-500">Daftar untuk mulai melaporkan keluhan</p>
     </div>
 
-    <form method="POST" action="{{ route('register') }}" class="space-y-4" data-aos="fade-up">
+    <form method="POST" action="{{ route('register') }}" class="space-y-5">
         @csrf
 
+        <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Nama Lengkap')" />
-            <x-text-input id="name" class="block mt-1 w-full px-4 py-2 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" 
-                          type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-user mr-1 text-indigo-500"></i>Nama Lengkap
+            </label>
+            <input type="text" name="name" id="name" value="{{ old('name') }}"
+                   placeholder="Masukkan nama lengkap"
+                   class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all"
+                   required autofocus autocomplete="name">
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
+        <!-- Email -->
         <div>
-            <x-input-label for="email" :value="__('Email Kampus')" />
-            <x-text-input id="email" class="block mt-1 w-full px-4 py-2 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" 
-                          type="email" name="email" :value="old('email')" required autocomplete="username" />
+            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-envelope mr-1 text-indigo-500"></i>Email Kampus
+            </label>
+            <input type="email" name="email" id="email" value="{{ old('email') }}"
+                   placeholder="nama@kampus.ac.id"
+                   class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all"
+                   required autocomplete="username">
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- Phone -->
         <div>
-            <x-input-label for="phone" :value="__('Nomor WhatsApp (Aktif)')" />
-            <x-text-input id="phone" class="block mt-1 w-full px-4 py-2 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" 
-                          type="text" name="phone" :value="old('phone')" required  />
+            <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fab fa-whatsapp mr-1 text-green-500"></i>Nomor WhatsApp
+            </label>
+            <input type="text" name="phone" id="phone" value="{{ old('phone') }}"
+                   placeholder="08xxxxxxxxxx"
+                   class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all"
+                   required>
+            <p class="text-xs text-gray-500 mt-1">
+                <i class="fas fa-info-circle mr-1"></i>
+                Untuk notifikasi status keluhan
+            </p>
             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
         </div>
 
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full px-4 py-2 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" 
-                          type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <!-- Password -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-lock mr-1 text-indigo-500"></i>Password
+                </label>
+                <input type="password" name="password" id="password"
+                       placeholder="Min. 8 karakter"
+                       class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all"
+                       required autocomplete="new-password">
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            </div>
+
+            <div>
+                <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-lock mr-1 text-indigo-500"></i>Konfirmasi
+                </label>
+                <input type="password" name="password_confirmation" id="password_confirmation"
+                       placeholder="Ulangi password"
+                       class="block w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-all"
+                       required autocomplete="new-password">
+            </div>
         </div>
 
-        <div>
-            <x-input-label for="password_confirmation" :value="__('Konfirmasi Password')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full px-4 py-2 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500" 
-                          type="password" name="password_confirmation" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+        <!-- Submit Button -->
+        <button type="submit" 
+                class="w-full px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
+            <i class="fas fa-user-plus"></i>
+            <span>Daftar Sekarang</span>
+        </button>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Sudah punya akun?') }}
+        <!-- Login Link -->
+        <div class="text-center pt-4 border-t border-gray-100">
+            <span class="text-gray-600">Sudah punya akun?</span>
+            <a href="{{ route('login') }}" class="font-semibold text-indigo-600 hover:text-indigo-800 ml-1">
+                Masuk disini
             </a>
-
-            <x-primary-button class="ml-4 bg-indigo-600 hover:bg-indigo-700">
-                {{ __('Daftar Sekarang') }}
-            </x-primary-button>
         </div>
     </form>
 </x-guest-layout>
