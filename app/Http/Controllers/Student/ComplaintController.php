@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Controllers/Student/ComplaintController.php
-
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
@@ -12,13 +10,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Setting;
 
-
+// Controller untuk mengelola keluhan dari sisi mahasiswa
 class ComplaintController extends Controller
 {
     public function __construct(protected WhatsAppService $wa)
     {
     }
 
+    // Tampilkan daftar keluhan milik mahasiswa
     public function index()
     {
         $complaints = Complaint::with('category')
@@ -29,6 +28,7 @@ class ComplaintController extends Controller
         return view('student.complaints.index', compact('complaints'));
     }
 
+    // Form buat keluhan baru
     public function create()
     {
         $categories = Category::orderBy('name')->get();
@@ -36,6 +36,7 @@ class ComplaintController extends Controller
         return view('student.complaints.create', compact('categories'));
     }
 
+    // Simpan keluhan baru + kirim notifikasi WA
     public function store(Request $request, WhatsAppService $whatsApp)
     {
         $data = $request->validate([
@@ -48,6 +49,7 @@ class ComplaintController extends Controller
         $data['user_id'] = auth()->id();
         $data['status']  = 'pending';
 
+        // Upload file bukti jika ada
         if ($request->hasFile('evidence_file')) {
             $data['evidence_file'] = $request->file('evidence_file')->store('complaints', 'public');
         }
@@ -57,7 +59,7 @@ class ComplaintController extends Controller
 
         $user = auth()->user();
 
-        // ====== KIRIM WA KE MAHASISWA (Konfirmasi Keluhan Diterima) ======
+        // Kirim WA konfirmasi ke mahasiswa
         $templateNew = Setting::getValue('wa_template_new',
             "Halo {nama}, keluhan Anda telah kami terima dengan ID #{id}.\n\nJudul: {judul}\nStatus: {status}\n\nTerima kasih telah melapor."
         );
@@ -76,6 +78,8 @@ class ComplaintController extends Controller
             ->route('student.complaints.index')
             ->with('success', 'Keluhan berhasil dikirim.');
     }
+
+    // Tampilkan detail keluhan beserta respons admin
     public function show(Complaint $complaint)
     {
         abort_unless($complaint->user_id === auth()->id(), 403);
@@ -85,6 +89,7 @@ class ComplaintController extends Controller
         return view('student.complaints.show', compact('complaint'));
     }
 
+    // Berikan rating dan feedback untuk keluhan yang selesai
     public function rate(Request $request, Complaint $complaint)
     {
         abort_unless($complaint->user_id === auth()->id(), 403);

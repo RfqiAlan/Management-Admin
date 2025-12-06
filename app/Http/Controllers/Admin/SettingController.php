@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
+// Controller untuk pengaturan WhatsApp (token & template pesan)
 class SettingController extends Controller
 {
+    // Form edit pengaturan WA
     public function editWhatsApp()
     {
         return view('admin.settings.whatsapp', [
@@ -19,6 +21,7 @@ class SettingController extends Controller
         ]);
     }
 
+    // Simpan pengaturan WA
     public function updateWhatsApp(Request $request)
     {
         $data = $request->validate([

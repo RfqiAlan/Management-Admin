@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+// Controller untuk edit profil user sendiri
 class ProfileController extends Controller
 {
+    // Form edit profil
     public function edit()
     {
         $user = auth()->user();
-
         return view('profile.edit', compact('user'));
     }
 
+    // Update profil (nama, email, phone, password)
     public function update(Request $request)
     {
         $user = auth()->user();
@@ -29,6 +31,7 @@ class ProfileController extends Controller
         $user->email = $data['email'];
         $user->phone = $data['phone'] ?? null;
 
+        // Update password jika diisi
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
         }

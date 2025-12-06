@@ -8,31 +8,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
+// Controller untuk manajemen user (admin & mahasiswa)
 class UserController extends Controller
 {
-    /**
-     * Menampilkan daftar semua user (Admin & Mahasiswa).
-     */
+    // Daftar semua user
     public function index()
     {
-        // Mengambil semua user terbaru, bukan hanya mahasiswa
         $users = User::latest()->paginate(10);
-
-        // Pastikan view menerima variabel $users
         return view('admin.users.index', compact('users'));
     }
 
-    /**
-     * Menampilkan form edit user.
-     */
+    // Form edit user
     public function edit(User $user)
     {
         return view('admin.users.edit', compact('user'));
     }
 
-    /**
-     * Menyimpan perubahan data user (termasuk role & password).
-     */
+    // Update data user (termasuk role & password)
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
@@ -43,7 +35,6 @@ class UserController extends Controller
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Update data utama
         $user->fill([
             'name'  => $data['name'],
             'email' => $data['email'],
@@ -51,7 +42,7 @@ class UserController extends Controller
             'role'  => $data['role'],
         ]);
 
-        // Update password hanya jika diisi
+        // Update password jika diisi
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
         }
@@ -62,17 +53,13 @@ class UserController extends Controller
             ->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus user dari database.
-     */
+    // Hapus user (tidak bisa hapus diri sendiri)
     public function destroy(User $user)
     {
-        // Validasi: Admin tidak boleh menghapus dirinya sendiri
         if ($user->id === auth()->id()) {
             return back()->with('error', 'Anda tidak dapat menghapus akun sendiri.');
         }
 
-        // Hapus user
         $user->delete();
 
         return back()->with('success', 'Pengguna berhasil dihapus.');

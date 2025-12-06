@@ -1,18 +1,17 @@
 <?php
 
-// app/Http/Controllers/Admin/DashboardController.php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
 use Illuminate\Support\Facades\DB;
 
+// Controller untuk dashboard admin - menampilkan statistik keluhan
 class DashboardController extends Controller
 {
     public function index()
     {
-        // total keluhan per bulan (tahun berjalan)
+        // Total keluhan per bulan
         $perMonth = Complaint::select(
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
                 DB::raw('COUNT(*) as total')
@@ -21,14 +20,13 @@ class DashboardController extends Controller
             ->orderBy('month')
             ->get();
 
-        // jumlah keluhan berdasarkan status
-       $statusCount = Complaint::selectRaw('status, COUNT(*) as total')
-    ->groupBy('status')
-    ->pluck('total', 'status')
-    ->toArray();
+        // Jumlah keluhan per status
+        $statusCount = Complaint::selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
 
-
-        // keluhan terbanyak per kategori
+        // Top 5 kategori dengan keluhan terbanyak
         $topCategories = Complaint::select('category_id', DB::raw('COUNT(*) as total'))
             ->groupBy('category_id')
             ->with('category')
@@ -36,7 +34,7 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // rata-rata rating kepuasan
+        // Rata-rata rating kepuasan
         $avgRating = Complaint::whereNotNull('rating')->avg('rating');
 
         return view('admin.dashboard', compact(
